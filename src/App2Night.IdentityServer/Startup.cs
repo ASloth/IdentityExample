@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
@@ -12,6 +13,7 @@ using Microsoft.Extensions.Logging;
 using App2Night.IdentityServer.Data;
 using App2Night.IdentityServer.Models;
 using App2Night.IdentityServer.Services;
+using IdentityServer4;
 
 namespace App2Night.IdentityServer
 {
@@ -47,6 +49,7 @@ namespace App2Night.IdentityServer
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
 
+
             services.AddMvc();
 
             // Add application services.
@@ -75,6 +78,48 @@ namespace App2Night.IdentityServer
             {
                 app.UseExceptionHandler("/Home/Error");
             }
+
+            
+            app.UseCookieAuthentication(new CookieAuthenticationOptions
+            {
+                AuthenticationScheme = "Cookies"
+            });
+            app.UseCookieAuthentication(new CookieAuthenticationOptions
+            {
+                AuthenticationScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme,
+
+                AutomaticAuthenticate = false,
+                AutomaticChallenge = false
+            });
+
+            //JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
+            //app.UseOpenIdConnectAuthentication(new OpenIdConnectOptions
+            //{
+            //    AuthenticationScheme = "oidc",
+            //    SignInScheme = "Cookies",
+
+            //    Authority = "http://localhost:5000",
+            //    RequireHttpsMetadata = false,
+
+            //    ClientId = "mvc",
+            //    ClientSecret = "secret",
+
+            //    ResponseType = "code id_token",
+            //    Scope = { "api1", "offline_access" },
+
+            //    GetClaimsFromUserInfoEndpoint = true,
+            //    SaveTokens = true
+            //});
+
+            //app.UseGoogleAuthentication(new GoogleOptions
+            //{
+            //    AuthenticationScheme = "Google",
+            //    DisplayName = "Google",
+            //    SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme,
+
+            //    ClientId = "1024269062453-o7js2psombckfoura3497t4iq3q230sn.apps.googleusercontent.com",
+            //    ClientSecret = "Bc9DwHQyE9Z06sA65frJ6sKa"
+            //});
 
             app.UseStaticFiles();
 

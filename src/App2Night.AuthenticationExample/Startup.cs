@@ -36,7 +36,7 @@ namespace App2Night.AuthenticationExample
             {
                 Authority = "http://localhost:5000",
                 ScopeName = "api1",
-
+                ScopeSecret = "secret",
                 RequireHttpsMetadata = false
             });
 

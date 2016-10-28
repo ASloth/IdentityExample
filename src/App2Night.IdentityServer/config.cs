@@ -14,22 +14,13 @@ namespace App2Night.IdentityServer
                 new Scope
                 {
                     Name = "api1",
-                    Description = "My API",
-                    IncludeAllClaimsForUser = true,
-                },
-                new Scope()
-                {
-                    Name = "identity",
-Type = ScopeType.Resource,
-
-    Claims = new List<ScopeClaim>
-        {
-              new ScopeClaim("role"),
-              new ScopeClaim(ClaimTypes.Name),
-              new ScopeClaim(ClaimTypes.GivenName)
-        },
-
-    IncludeAllClaimsForUser = true
+                    Description = "My API", 
+                    Type = ScopeType.Resource,
+                     IncludeAllClaimsForUser = true,
+                     ScopeSecrets = new List<Secret>()
+                     {
+                        new Secret("secret".Sha256())
+                     }
                 }
             };
         }
@@ -38,21 +29,25 @@ Type = ScopeType.Resource,
         {
             return new List<Client>
             {
+                 
                 new Client
                 {
                     ClientId = "nativeApp",
 
                     // no interactive user, use the clientid/secret for authentication
                     AllowedGrantTypes = GrantTypes.ResourceOwnerPassword,
-
+                    AccessTokenType = AccessTokenType.Reference,
                     // secret for authentication
                     ClientSecrets =
                     {
                         new Secret("secret".Sha256())
-                    },
-
+                    }, 
                     // scopes that client has access to
-                    AllowedScopes = {"api1", "identity", StandardScopes.Profile.Name, StandardScopes.OpenId.Name, "openid"}
+                    AllowedScopes =
+                    {
+                        "api1", 
+                        StandardScopes.OpenId.Name, 
+                    }
                 }
             };
         }
@@ -66,16 +61,16 @@ Type = ScopeType.Resource,
                 {
                     Subject = "1",
                     Username = "alice",
-                    Password = "password" 
+                    Password = "password"
                 },
                 new InMemoryUser
                 {
                     Subject = "2",
                     Username = "bob",
                     Password = "password",
-                    Claims = new []
+                    Claims = new[]
                     {
-                        new Claim(ClaimTypes.Name, "Bobss"), 
+                        new Claim(ClaimTypes.Name, "Bobss"),
                         new Claim(ClaimTypes.GivenName, "Testname")
                     }
                 }
